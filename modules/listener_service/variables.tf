@@ -6,7 +6,7 @@ variable "resource_group_location" {
   type = string
 }
 
-variable "site_name" {
+variable "service_name" {
   type = string
 }
 
