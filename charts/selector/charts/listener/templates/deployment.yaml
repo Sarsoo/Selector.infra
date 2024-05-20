@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "webapp.fullname" . }}
-  namespace: {{ include "webapp.namespace" . }}
+  name: {{ include "listener.fullname" . }}
+  namespace: {{ include "listener.namespace" . }}
   labels:
-    {{- include "webapp.labels" . | nindent 4 }}
+    {{- include "listener.labels" . | nindent 4 }}
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -20,7 +20,7 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "webapp.selectorLabels" . | nindent 6 }}
+      {{- include "listener.selectorLabels" . | nindent 6 }}
   {{- with .Values.deploymentStrategy }}
   strategy:
     {{- toYaml . | trim | nindent 4 }}
@@ -28,7 +28,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "webapp.selectorLabels" . | nindent 8 }}
+        {{- include "listener.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -37,7 +37,7 @@ spec:
         checksumAppsettings: {{ include (print $.Template.BasePath "/configmap.appsettings.yaml") . | sha256sum }}
 
     spec:
-      serviceAccountName: {{ include "webapp.serviceAccountName" . }}
+      serviceAccountName: {{ include "listener.serviceAccountName" . }}
       {{- with .Values.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -46,10 +46,10 @@ spec:
       volumes:
         - name: appsettings-volume
           configMap:
-            name: {{ include "webapp.fullname" . }}-appsettings
+            name: {{ include "listener.fullname" . }}-appsettings
         - name: nlog-volume
           configMap:
-            name: {{ include "webapp.fullname" . }}-nlog
+            name: {{ include "listener.fullname" . }}-nlog
 
       containers:
         - name: {{ .Chart.Name }}
@@ -64,14 +64,6 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          ports:
-            - name: {{ .Values.podPortName }}
-              containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
-            {{- range $key, $value := .Values.env }}
-            - name: "{{ tpl $key $ }}"
-              value: "{{ tpl (print $value) $ }}"
-            {{- end }}
 
           volumeMounts:
             - name: appsettings-volume
@@ -87,11 +79,6 @@ spec:
           #       - touch
           #       - alive
           #   periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: {{ .Values.service.targetPort }}
-            periodSeconds: 30
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 6 }}

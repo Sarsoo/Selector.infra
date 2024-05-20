@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "listener.fullname" . }}-appsettings"
+  namespace: {{ include "listener.namespace" . }}
+  labels:
+    {{- include "listener.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+data:
+  appsettings.json: |-
+    {
+      "Selector": {
+        "ClientId": "{{ .Values.spotify.clientId }}",
+        "ClientSecret": "{{ .Values.spotify.clientSecret }}",
+        "LastfmClient": "{{ .Values.lastfmClient }}",
+        "Equality": "{{ .Values.equalityMode }}",
+        "Database": {
+            "enabled": {{ .Values.databaseEnabled }},
+            "ConnectionString": "{{ .Values.databaseConnectionString }}",
+            "Migrate": {{ .Values.databaseMigrate }}
+        },
+        "Redis": {
+          "enabled": {{ .Values.redis.enabled }},
+          "connectionstring": "{{ .Values.redis.connectionString }}"
+        }
+      },
+      "Logging": {
+        "LogLevel": {
+          "Default": "Trace"
+        }
+      }
+    }
