@@ -1,0 +1,1 @@
+helm template testrelease selector --output-dir './out' --debug
