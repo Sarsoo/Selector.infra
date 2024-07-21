@@ -1,0 +1,27 @@
+name: ci
+
+on: [push]
+
+jobs:
+
+  publish:
+
+    runs-on: ubuntu-latest
+    name: Publish Charts
+    if: gitea.event_name == 'push' && (gitea.ref == 'refs/heads/master' || startsWith(gitea.ref, 'refs/tags/'))
+
+    steps:
+      - uses: actions/checkout@v4
+        with: 
+          github-server-url: https://gitea.sheep-ghoul.ts.net
+
+      - uses: azure/setup-helm@v4.2.0
+
+      - name: Login to Repo
+        run: helm registry login -u ${{ secrets.REPO_USERNAME }} -p ${{ secrets.REPO_TOKEN }} gitea.sheep-ghoul.ts.net
+
+      - name: Package Chart
+        run: helm package charts/selector
+
+      - name: Push Chart
+        run: helm push Selector-0.0.1.tgz oci://gitea.sheep-ghoul.ts.net/sarsoo
