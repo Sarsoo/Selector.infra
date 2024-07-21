@@ -8,7 +8,7 @@ jobs:
 
     runs-on: ubuntu-latest
     name: Publish Charts
-    if: gitea.event_name == 'push' && (gitea.ref == 'refs/heads/master' || startsWith(gitea.ref, 'refs/tags/'))
+    if: gitea.event_name == 'push' && (gitea.ref == 'refs/heads/main' || startsWith(gitea.ref, 'refs/tags/'))
 
     steps:
       - uses: actions/checkout@v4
