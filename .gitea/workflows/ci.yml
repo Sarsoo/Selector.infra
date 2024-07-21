@@ -24,4 +24,4 @@ jobs:
         run: helm package -u charts/selector
 
       - name: Push Chart
-        run: helm push Selector-0.0.1.tgz oci://gitea.sheep-ghoul.ts.net/sarsoo
+        run: helm push Selector-0.0.1.tgz oci://gitea.sheep-ghoul.ts.net/sarsoo/helm-charts
