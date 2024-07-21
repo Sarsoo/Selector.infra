@@ -1,5 +1,5 @@
 apiVersion: v2
-name: Selector
+name: selector
 description: Helm charts for the Selector Spotify monitoring system
 home: https://selector.sarsoo.xyz
 
