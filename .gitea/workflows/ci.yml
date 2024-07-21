@@ -21,4 +21,4 @@ jobs:
         run: helm package -u charts/selector
 
       - name: Push Chart
-        run: curl --user ${{ secrets.REPO_USERNAME }}:${{ secrets.REPO_TOKEN }} -X POST --upload-file ./selector-0.0.1.tgz https://gitea.sheep-ghoul.ts.net/api/packages/${{ secrets.REPO_USERNAME }}/helm/api/charts
+        run: curl --user ${{ secrets.REPO_USERNAME }}:${{ secrets.REPO_TOKEN }} -X POST --upload-file ./selector-*.tgz https://gitea.sheep-ghoul.ts.net/api/packages/${{ secrets.REPO_USERNAME }}/helm/api/charts
